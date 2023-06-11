@@ -1,0 +1,33 @@
+//LOADVSAM JOB (1),LOADVSAM,CLASS=A,MSGCLASS=X,MSGLEVEL=(1,1),          
+//             REGION=1024K,NOTIFY=&SYSUID                              
+//DELDEF EXEC PGM=IDCAMS                                                
+//SYSPRINT DD SYSOUT=*                                                  
+//SYSIN DD *                                                            
+ DELETE PROJECTS.CICS.CLIENTES                                          
+ SET MAXCC = 0                                                          
+ DEFINE CLUSTER                                       -                 
+      (NAME(PROJECTS.CICS.CLIENTES) VOLUMES(ZVOL00)   -                 
+       TRACKS(15 15)  INDEXED                         -                 
+       SHAREOPTIONS(1 3) UNIQUE                       -                 
+       RECORDSIZE(84 84)                              -                 
+       KEYS(9 0)                                      -                 
+      )                                               -                 
+     DATA ( NAME(PROJECTS.CICS.CLIENTES.DATA))        -                 
+    INDEX ( NAME(PROJECTS.CICS.CLIENTES.INDEX))                         
+//*                                                                     
+//CARGA   EXEC PGM=IDCAMS                                               
+//SYSPRINT DD SYSOUT=*                                                  
+//UIN      DD *                                                         
+000000000123456789012345678901234567890123456789012345678901234567890123
+000000001MIGUEL    FERNANDEZ PEREZ      666444555CALLE PRIMAVERA,23,MAD|
+000000002FRANCISCO PELAYO GARCIA        222111444CALLE PRINCIPAL,45,SEV|
+000000003RODRIGO   BLANCO LOPEZ         777888999AVENIDA CENTRAL,67,BAR|
+000000004ALMUDENA  TORRES ALVAREZ       111222555CALLE PRINCIPAL,89,COR|
+000000005ERNESTO   ROMERO SANCHEZ       777000222AVENIDA CENTRAL,01,VIZ|
+000000006LAURA     RUIZ MORENO          888111333CALLE PRINCIPAL,23,VIG|
+000000007SUSANA    JIMENEZ ORTERGA      555444000AVENIDA CENTRAL,45,MOS|
+/*                                                                      
+//OUT   DD DSN=PROJECTS.CICS.CLIENTES,DISP=OLD                          
+//SYSIN DD *                                                            
+ REPRO INFILE(UIN) OUTFILE(OUT)                                         
+/*                                                                      
